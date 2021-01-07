@@ -98,7 +98,9 @@ public class TokenInterceptor implements HandlerInterceptor {
 
 
         try {
+
             JWTUtil.verify(token, user.getUserName(), user.getPassword());
+
         } catch (SignatureVerificationException e) {
             returnJson(response, ResponseBean.error(10086, "无效签名"));
             return false;

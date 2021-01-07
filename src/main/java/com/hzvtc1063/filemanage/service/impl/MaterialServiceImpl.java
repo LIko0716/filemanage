@@ -4,11 +4,13 @@ import com.hzvtc1063.filemanage.entity.MultipartFileParam;
 import com.hzvtc1063.filemanage.mapper.FileMapper;
 import com.hzvtc1063.filemanage.service.FileService;
 import com.hzvtc1063.filemanage.service.MaterialService;
+import com.hzvtc1063.filemanage.utils.LogUtil;
 import com.hzvtc1063.filemanage.utils.PathUtils;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -33,7 +35,7 @@ public class MaterialServiceImpl implements MaterialService{
     private FileMapper fileMapper;
 
     @Override
-    public String chunkUploadByMappedByteBuffer(MultipartFileParam param, String filePath,String logicPath) throws IOException, NoSuchMethodException, InvocationTargetException, IllegalAccessException{
+    public String chunkUploadByMappedByteBuffer(MultipartFileParam param, String filePath, String logicPath, HttpServletRequest request,String username) throws IOException, NoSuchMethodException, InvocationTargetException, IllegalAccessException{
         if(param.getTaskId() == null || "".equals(param.getTaskId())){
             param.setTaskId(UUID.randomUUID().toString());
         }
@@ -88,7 +90,8 @@ public class MaterialServiceImpl implements MaterialService{
             file.setIsDir(0);
             fileMapper.insert(file);
             //java.io.File parentFile = new java.io.File(filePath);
-
+            String[] msg = {username, fileName};
+            LogUtil.log(request, "upload", msg);
         }
         return param.getTaskId();
     }

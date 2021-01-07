@@ -36,7 +36,7 @@ import java.util.List;
  */
 @Api("这是用户控制类")
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/user")
 @Slf4j
 public class UserController {
 

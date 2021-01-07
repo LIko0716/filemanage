@@ -60,28 +60,28 @@ public class PermissionInterceptor implements HandlerInterceptor {
         wrapper.eq("user_id",user.getId());
         Permission permission = permissionMapper.selectOne(wrapper);
         String uri = request.getRequestURI();
-        if ("/api/file/mkdir".equals(uri)){
+        if ("/file/mkdir".equals(uri)){
             if (permission.getMkdir()==0){
                 return true;
             }else{
                 returnJson(response, ResponseBean.error(360, "你的权限不足"));
                 return false;
             }
-        }else if("/api/file/upload".equals(uri)||"/api/file/uploadFloder".equals(uri)){
+        }else if("/file/upload".equals(uri)||"/file/uploadFloder".equals(uri)){
             if (permission.getUpload()==1){
                 returnJson(response, ResponseBean.error(360, "你的权限不足"));
                 return false;
             }else{
                 return true;
             }
-        }else if("/api/file/reName".equals(uri)){
+        }else if("/file/reName".equals(uri)){
             if (permission.getRname()==1){
                 returnJson(response, ResponseBean.error(360, "你的权限不足"));
                 return false;
             }else{
                 return true;
             }
-        }else if("/api/file/deleteFile".equals(uri)){
+        }else if("/file/deleteFile".equals(uri)){
             if (permission.getDel()==1){
                 returnJson(response, ResponseBean.error(360, "你的权限不足"));
                 return false;

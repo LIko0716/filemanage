@@ -46,7 +46,7 @@ import java.util.*;
 @Api("文件操作类")
 @Slf4j
 @RestController
-@RequestMapping("/api/file")
+@RequestMapping("/file")
 public class FileController {
 
     @Autowired
@@ -76,7 +76,7 @@ public class FileController {
 
             diskPath = PathUtils.getSystemPath() + separator + dirDto.getDirName();
         } else {
-            filePath = filePath + dirDto.getFilePath() + "/";
+            filePath = dirDto.getFilePath() + "/";
             diskPath = PathUtils.getSystemPath() + dirDto.getFilePath() + separator + dirDto.getDirName();
         }
         int count = fileService.selectDirNum(dirDto.getDirName(), filePath);
@@ -126,7 +126,7 @@ public class FileController {
         File upFile = new File();
         String fileName = txtDto.getFileName();
         upFile.setIsDir(0);
-        upFile.setFileName(fileName + ".txt");
+        upFile.setFileName(fileName);
         upFile.setFilePath(filePath);
         upFile.setExtName("txt");
         upFile.setFileSize(file.length());
@@ -180,11 +180,11 @@ public class FileController {
         String diskPath;
         if ("/".equals(filePath)) {
             file.setFilePath("/");//数据库存储虚拟文件路径
-            diskPath = rootPath + separator + TimeUtils.getFileName() + "." + extFilename;
+            diskPath = rootPath + separator + fileName ;
             file.setFileUrl(diskPath);
         } else {
             file.setFilePath(filePath + "/");
-            diskPath = rootPath + filePath + separator + TimeUtils.getFileName() + "." + extFilename;
+            diskPath = rootPath + filePath + separator + fileName;
             file.setFileUrl(diskPath);
         }
         java.io.File file1 = new java.io.File(diskPath);
@@ -231,7 +231,7 @@ public class FileController {
         } else {
             Random random = new Random();
             int i = random.nextInt();
-            String zipName = byId.getFileName() + i + ".zip";
+            String zipName = byId.getFileName() + ".zip";
             String zipPath = PathUtils.getSystemPath() + separator + zipName;
 
 
@@ -283,18 +283,18 @@ public class FileController {
                 response.setContentType("text/html; charset=UTF-8");
                 LinkedList<String> img = ListUtil.toLinkedList("bmp,jpg,png,tif,gif,jpeg,pcx,tga,exif,fpx,svg,psd,cdr,pcd,dxf,ufo,eps,ai,raw,WMF,webp,avif".split(","));
                 LinkedList<String> video = ListUtil.toLinkedList("wmv,asf,asx,rm,rmvb,mp4,3gp,mov,m4v,avi,dat,mkv,flv,vob".split(","));
-                List<String> txt = ListUtil.toList("txt", "html");
+                List<String> txt = ListUtil.toList("txt", "html","out","text");
                 if (img.contains(exName.toLowerCase())) {
                     response.setContentType("image/" + exName);
                 } else if (video.contains(exName.toLowerCase())) {
                     response.setContentType("video/" + exName);
                 } else if ("pdf".equals(exName.toLowerCase())) {
                     response.setContentType("application/pdf");
-                } else if (txt.equals(exName.toLowerCase())) {
+                } else if (txt.contains(exName.toLowerCase())) {
 
                 } else {
                     response.addHeader("Content-Disposition",
-                            "attachment;filename=" + byId.getFileName() + "." + exName);
+                            "attachment;filename=" + byId.getFileName());
                 }
                 byte[] buf = new byte[1024];
                 InputStream in = new FileInputStream(file);
@@ -478,9 +478,10 @@ public class FileController {
                 java.io.File parentFile = new java.io.File(path);
                 List<com.hzvtc1063.filemanage.entity.File> dirList = new ArrayList<>();
                 createFolder(parentFile, dirList, filePath);
-                materialService.chunkUploadByMappedByteBuffer(param, path, filePath);//service层
-                newFile = new java.io.File(parentFile.getAbsolutePath() + "/" + param.getFile().getOriginalFilename());
                 String username = JWTUtil.getUsername(token);
+                materialService.chunkUploadByMappedByteBuffer(param, path, filePath,request,username);//service层
+                newFile = new java.io.File(parentFile.getAbsolutePath() + "/" + param.getFile().getOriginalFilename());
+
                 User user = getUser(username);
                 // 文件路径
                 for (int i = 0; i < dirList.size(); i++) {

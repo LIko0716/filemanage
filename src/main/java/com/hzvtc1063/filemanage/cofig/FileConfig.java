@@ -31,16 +31,16 @@ public class FileConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         InterceptorRegistration registration = registry.addInterceptor(getTokenInterceptor());
-        registration.addPathPatterns("/api/**");                      //所有路径都被拦截
+        registration.addPathPatterns("/**");                      //所有路径都被拦截
         registration.excludePathPatterns(                         //添加不拦截路径
-                "/api/user/registry",            //登录
-                "/api/user/login",
-                "/api/file/download",
-                "/api/file/getFileList",
-                "/api/file/watch",
-                "/api/user/admin/login",
-                "/api/user/getPermissionList",
-                "/api/file/selectByFileName",
+                "/user/registry",            //登录
+                "/user/login",
+                "/file/download",
+                "/file/getFileList",
+                "/file/watch",
+                "/user/admin/login",
+                "/user/getPermissionList",
+                "/file/selectByFileName",
                 "/**/*.html",            //html静态资源
                 "/**/*.js",
                 //js静态资源

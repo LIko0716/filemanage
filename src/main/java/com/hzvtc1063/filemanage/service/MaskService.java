@@ -1,5 +1,6 @@
 package com.hzvtc1063.filemanage.service;
 
+import com.hzvtc1063.filemanage.dto.MaskDto;
 import com.hzvtc1063.filemanage.entity.Mask;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -13,4 +14,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface MaskService extends IService<Mask> {
 
+    boolean addMask(MaskDto maskDto);
 }
